@@ -1,0 +1,4 @@
+# ignore dirs/files:
+node_modules
+.idea
+package-lock.json
