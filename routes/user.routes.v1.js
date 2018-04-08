@@ -62,6 +62,36 @@ routes.post('/', function (req, res) {
             res.status(400).json(error);
         });
 });
+//Update user
+routes.put('/:id', function (req, res) {
+    const userProps = req.body;
+    console.log(req.body);
+    const updatedUser = {
+        'userName': req.body._userName,
+        'firstName': req.body._firstName,
+        'lastName': req.body._lastName,
+        'email': req.body._email
+    };
+    //console.log(updatedUser);
+    User.findByIdAndUpdate({'_id': req.params.id}, updatedUser)
+        .then(() => {
+            User.findOne({_id: req.params.id})
+                .then((user) => {
+                    res.send(user);
+                })
+        })
+});
+
+//Delete user
+routes.delete('/:id', function (req, res) {
+    User.findOne({'_id': req.params.id})
+        .then((user) => {
+            user.remove()
+                .then(() => {
+                    res.status(200).json({message:'User removed'});
+                })
+        })
+});
 
 //Add Post by User
 routes.put('/:id/post', function (req, res) {
@@ -100,15 +130,6 @@ routes.delete('/:id/post/:postId', function (req, res) {
         });
 });
 
-//Delete user
-routes.delete('/:id', function (req, res) {
-    User.findOne({'_id': req.params.id})
-        .then((user) => {
-            user.remove()
-                .then(() => {
-                    res.status(200).json({message:'User removed'});
-                })
-        })
-});
+
 
 module.exports = routes;

@@ -6,7 +6,7 @@ var routes = express.Router();
 var Post = require('../model/post');
 var Comment = require('../model/comment');
 
-
+//Find all posts
 routes.get('/', function (req, res) {
     Post.find({})
         .populate('comments')
@@ -30,6 +30,39 @@ routes.get('/:id', function (req, res) {
         })
 });
 
+//Update Post
+routes.put('/:id', function (req, res) {
+    const postProps = req.body;
+    const updatedPost = {
+        'title': postProps._title,
+        'content': postProps._content,
+        'tag': postProps._tag,
+        'comments': postProps._comments
+    };
+    Post.findByIdAndUpdate({'_id': req.params.id}, updatedPost)
+        .then(() => {
+            Post.findOne({'_id': req.params.id})
+                .then((result) => {
+                    res.send(result);
+                })
+        })
+        .catch(error => {
+            res.send(error);
+            console.log(error);
+        })
+});
+
+//Remove post
+routes.delete('/:id', function (req, res) {
+    Post.findOne({'_id': req.params.id})
+        .then((post) => {
+            post.remove()
+                .then(() => {
+                    res.status(200).json({message:'Post removed'});
+                })
+        })
+});
+
 //Post comment on PostID
 routes.put('/:id/comment', function (req, res) {
     const commentProps = req.body;
@@ -46,7 +79,7 @@ routes.put('/:id/comment', function (req, res) {
                 })
         })
 });
-//Remove post by postID and commentID
+//Remove comment by postID and commentID
 routes.delete('/:id/comment/:commentId', function (req, res) {
     console.log(req.params);
     Post.findOne({'_id': req.params.id})
