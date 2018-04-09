@@ -9,6 +9,7 @@ var Comment = require('../model/comment');
 //Find all posts
 routes.get('/', function (req, res) {
     Post.find({})
+        .sort([['created_at', 'descending']])
         .populate('comments')
         .then((post) => {
             res.status(200).json(post);
@@ -30,14 +31,33 @@ routes.get('/:id', function (req, res) {
         })
 });
 
+//Post a post
+routes.post('/', function (req, res) {
+    console.log(req.body);
+    const newPost = new Post({
+        'title': req.body.title,
+        'content': req.body.content,
+        'tag': req.body.tag,
+    });
+    Post.create(newPost)
+        .then(post => {
+            console.log("create: " + post);
+            post.save();
+            res.send(post)
+        })
+        .catch((error) => {
+            res.status(400).json(error);
+        });
+});
+
 //Update Post
 routes.put('/:id', function (req, res) {
     const postProps = req.body;
     const updatedPost = {
-        'title': postProps._title,
-        'content': postProps._content,
-        'tag': postProps._tag,
-        'comments': postProps._comments
+        'title': postProps.title,
+        'content': postProps.content,
+        'tag': postProps.tag,
+        'comments': postProps.comments
     };
     Post.findByIdAndUpdate({'_id': req.params.id}, updatedPost)
         .then(() => {
@@ -67,8 +87,8 @@ routes.delete('/:id', function (req, res) {
 routes.put('/:id/comment', function (req, res) {
     const commentProps = req.body;
     const comment = new Comment({
-        'user': commentProps._user,
-        'content': commentProps._content
+        'user': commentProps.user,
+        'content': commentProps.content
     });
     Post.findOne({'_id': req.params.id})
         .then((post) => {

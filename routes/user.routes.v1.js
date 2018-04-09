@@ -43,18 +43,33 @@ routes.get('/:id', function (req, res) {
         })
 });
 
+//Find one based on UserId
+routes.get('/:id/posts', function (req, res) {
+    User.findOne({'_id': req.params.id})
+        .sort([['created_at', 'descending']])
+        .populate({
+            path: 'posts',
+            ref: 'post'
+        })
+        .then((user) => {
+            res.status(200).json(user.posts);
+        })
+        .catch((error) => {
+            res.status(400).json(error);
+        })
+});
 //Create
 routes.post('/', function (req, res) {
     console.log(req.body);
     const newUser = new User({
-        'userName': req.body._userName,
-        'firstName': req.body._firstName,
-        'lastName': req.body._lastName,
-        'email': req.body._email
+        'userName': req.body.userName,
+        'firstName': req.body.firstName,
+        'lastName': req.body.lastName,
+        'email': req.body.email
     });
     User.create(newUser)
         .then(user => {
-            console.log(user);
+            console.log("create: " + user);
             user.save();
             res.send(user)
         })
@@ -67,10 +82,10 @@ routes.put('/:id', function (req, res) {
     const userProps = req.body;
     console.log(req.body);
     const updatedUser = {
-        'userName': req.body._userName,
-        'firstName': req.body._firstName,
-        'lastName': req.body._lastName,
-        'email': req.body._email
+        'userName': req.body.userName,
+        'firstName': req.body.firstName,
+        'lastName': req.body.lastName,
+        'email': req.body.email
     };
     //console.log(updatedUser);
     User.findByIdAndUpdate({'_id': req.params.id}, updatedUser)
@@ -97,10 +112,10 @@ routes.delete('/:id', function (req, res) {
 routes.put('/:id/post', function (req, res) {
     const postProps = req.body;
     const post = new Post({
-        'title': postProps._title,
-        'content': postProps._content,
+        'title': postProps.title,
+        'content': postProps.content,
         'tag': postProps._tag,
-        'comments': postProps._comments
+        'comments': postProps.comments
     });
     User.findOne({'_id': req.params.id})
         .then((user) => {

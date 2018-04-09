@@ -11,6 +11,14 @@ var Comment = require('../model/comment');
 
 routes.get('/', function (req, res) {
     Comment.find({})
+        .sort([['created_at', 'descending']])
+        .populate({
+            path: 'users',
+            populate: {
+                path: 'users',
+                model: 'user'
+            }
+        })
         .then((comment) => {
             res.status(200).json(comment);
         })
@@ -22,6 +30,14 @@ routes.get('/', function (req, res) {
 //find by id
 routes.get('/:id', function (req, res) {
     Comment.findOne({'_id': req.params.id})
+        .sort([['created_at', 'descending']])
+        .populate({
+            path: 'comments',
+            populate: {
+                path: 'user',
+                select: 'userName'
+            }
+        })
         .then((comment) => {
             res.status(200).json(comment);
         })
@@ -34,8 +50,8 @@ routes.get('/:id', function (req, res) {
 routes.put('/:id', function (req, res) {
     const commentProps = req.body;
     const updatedComment = {
-        'user': commentProps._user,
-        'content': commentProps._content
+        'user': commentProps.user,
+        'content': commentProps.content
     };
     Comment.findByIdAndUpdate({'_id': req.params.id}, updatedComment)
         .then(() => {
@@ -52,7 +68,7 @@ routes.delete('/:id', function (req, res) {
         .then((comment) => {
             comment.remove()
                 .then(() => {
-                    res.status(200).json({message: 'Comment removed'});
+                    res.status(200).json({message: 'Commentn removed'});
                 })
         })
 });
