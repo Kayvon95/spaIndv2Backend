@@ -114,7 +114,7 @@ routes.put('/:id/post', function (req, res) {
     const post = new Post({
         'title': postProps.title,
         'content': postProps.content,
-        'tag': postProps._tag,
+        'tag': postProps.tag,
         'comments': postProps.comments
     });
     User.findOne({'_id': req.params.id})

@@ -31,24 +31,24 @@ routes.get('/:id', function (req, res) {
         })
 });
 
-//Post a post
-routes.post('/', function (req, res) {
-    console.log(req.body);
-    const newPost = new Post({
-        'title': req.body.title,
-        'content': req.body.content,
-        'tag': req.body.tag,
-    });
-    Post.create(newPost)
-        .then(post => {
-            console.log("create: " + post);
-            post.save();
-            res.send(post)
-        })
-        .catch((error) => {
-            res.status(400).json(error);
+    //Post a post
+    routes.post('/', function (req, res) {
+        console.log(req.body);
+        const newPost = new Post({
+            'title': req.body.title,
+            'content': req.body.content,
+            'tag': req.body.tag,
         });
-});
+        Post.create(newPost)
+            .then(post => {
+                console.log("create: " + post);
+                post.save();
+                res.send(post)
+            })
+            .catch((error) => {
+                res.status(400).json(error);
+            });
+    });
 
 //Update Post
 routes.put('/:id', function (req, res) {

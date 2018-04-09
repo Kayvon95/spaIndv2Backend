@@ -46,6 +46,24 @@ routes.get('/:id', function (req, res) {
         })
 });
 
+//Post a comment
+routes.post('/', function (req, res) {
+    console.log(req.body);
+    const newComment= new Comment({
+        'content': req.body.content,
+        'user': req.body.user,
+    });
+    Comment.create(newComment)
+        .then(comment => {
+            console.log("create: " + comment);
+            comment.save();
+            res.send(comment)
+        })
+        .catch((error) => {
+            res.status(400).json(error);
+        });
+});
+
 //edit comment
 routes.put('/:id', function (req, res) {
     const commentProps = req.body;

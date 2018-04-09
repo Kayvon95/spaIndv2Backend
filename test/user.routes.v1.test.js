@@ -102,7 +102,7 @@ describe('Creating a user', () => {
 
         it('it should add a post to a user and return it', (done) => {
             chai.request(server)
-                .put('/api/v1/users/' + game._id + '/post')
+                .put('/api/v1/users/' + user._id + '/post')
                 .send({
                     title: 'Testpost',
                     content: 'Testcontent'
@@ -116,7 +116,7 @@ describe('Creating a user', () => {
         })
     });
     describe('/DELETE user', () => {
-        it('it should delete a user by ud', (done) => {
+        it('it should delete a user by id', (done) => {
             chai.request(server)
                 .get('/api/v1/users')
                 .end((err, res) => {
@@ -126,7 +126,7 @@ describe('Creating a user', () => {
                         .end((err, response) => {
                             response.should.have.status(200);
                             response.body.should.be.a('object');
-                            response.body.should.have.property('message').equal('game removed');
+                            response.body.should.have.property('message').equal('user removed');
                             done();
                         });
                 })
@@ -135,8 +135,8 @@ describe('Creating a user', () => {
 
     //clear collection
     // after((done => {
-    //     const { games } = mongoose.connection.collections;
-    //     games.drop(() => {
+    //     const { users } = mongoose.connection.collections;
+    //     uses.drop(() => {
     //         done();
     //     });
     // }))

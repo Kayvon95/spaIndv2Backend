@@ -4,13 +4,14 @@ var env = {
     dbPort: process.env.DB_PORT || '27017',
     dbUser: process.env.DB_USER || '',
     dbPassword: process.env.DB_PASSWORD || '',
-    dbDatabase: process.env.DB_DATABASE || 'messageboard'
+    dbDatabase: process.env.DB_DATABASE || 'messageboard',
+    neo4jPassword: process.env.NEO4J_PASSWORD || '',
 };
 
-var dbUrl = process.env.NODE_ENV === 'production' ?
-    'mongodb://' + env.dbUser + ':' + env.dbPassword + '@' + env.dbHost + ':' + env.dbPort + '/' + env.dbDatabase :
-    'mongodb://localhost/' + env.dbDatabase;
-// var dbUrl =  `mongodb://localhost:${env.dbPort}/` + env.dbDatabase;
+// var dbUrl = process.env.NODE_ENV === 'production' ?
+//     'mongodb://' + env.dbUser + ':' + env.dbPassword + '@' + env.dbHost + ':' + env.dbPort + '/' + env.dbDatabase :
+//     'mongodb://localhost/' + env.dbDatabase;
+var dbUrl =  `mongodb://localhost:${env.dbPort}/` + env.dbDatabase;
 
 module.exports = {
     env: env,
